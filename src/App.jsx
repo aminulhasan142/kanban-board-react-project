@@ -1,35 +1,34 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import AddTask from "./components/AddTask";
+import Header from "./components/Header";
+import KanbanBoard from "./components/KanbanBoard";
+import Sidebar from "./components/Sidebar";
+import { AddTaskContext } from "./context/addTaskContext";
+import { initialData } from "./data/data";
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [addTaskOpen, setAddTaskOpen] = useState(false);
+  const [tasks, setTasks] = useState(initialData);
+  function handleAddNewTask(newTask) {
+    setTasks([...tasks, newTask]);
+    console.log(tasks);
+  }
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <AddTaskContext.Provider value={{ addTaskOpen, setAddTaskOpen }}>
+        {addTaskOpen ? (
+          <AddTask onHandleAddNewTask={handleAddNewTask} />
+        ) : (
+          <div className="min-h-screen flex flex-col lg:flex-row">
+            <Sidebar />
+            <main className="flex-1 flex flex-col min-h-0">
+              <Header />
+              <KanbanBoard tasks={tasks} />
+            </main>
+          </div>
+        )}
+      </AddTaskContext.Provider>
     </>
-  )
+  );
 }
-
-export default App
